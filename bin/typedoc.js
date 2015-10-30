@@ -21,7 +21,11 @@ var td;
      * Locate TypeScript
      */
     td.tsPath = (function () {
-        var path = td.Path.dirname(require.resolve('typescript'));
+        var path, pathIndex = process.argv.indexOf('-tspath');
+        if (pathIndex >= 0) {
+            path = process.argv[pathIndex + 1];
+        }
+        var path = path || td.Path.dirname(require.resolve('typescript'));
         if (!td.FS.existsSync(td.Path.resolve(path, 'tsc.js'))) {
             process.stderr.write('Could not find ´tsc.js´. Please install typescript, e.g. \'npm install typescript\'.\n');
             process.exit();
@@ -960,6 +964,10 @@ var td;
                         return OptionsParser.convert(param, value);
                     }
                 }
+            }, {
+                name: 'tspath',
+                help: 'Specify an alternative TypeScript compiler?',
+                type: ParameterType.String
             });
         };
         /**
@@ -1203,6 +1211,9 @@ var td;
                 else {
                     result = this.setOption(parameter, obj[key]) && result;
                 }
+            }
+            if (this.application.options.tspath) {
+                td.tsPath = this.application.options.tspath;
             }
             return result;
         };
@@ -3789,13 +3800,7 @@ var td;
             if (!name) {
                 if (!node.symbol)
                     return null;
-                // Get name (even of default export)
-                if (node.localSymbol) {
-                    name = node.localSymbol.name;
-                }
-                else {
-                    name = node.symbol.name;
-                }
+                name = node.symbol.name;
             }
             // Test whether the node is exported
             var isExported;

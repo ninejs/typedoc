@@ -61,6 +61,11 @@ declare module td
          * Which logger should be used to record messages?
          */
         logger?:LoggerType;
+
+        /**
+         * Specify an alternative TypeScript compiler?
+         */
+        tspath?: string;
     }
 }
 
@@ -303,6 +308,10 @@ module td
                         return OptionsParser.convert(param, value);
                     }
                 }
+            }, {
+                name: 'tspath',
+                help: 'Specify an alternative TypeScript compiler?',
+                type: ParameterType.String
             });
         }
 
@@ -569,6 +578,9 @@ module td
                 } else {
                     result = this.setOption(parameter, obj[key]) && result;
                 }
+            }
+            if (this.application.options.tspath) {
+                td.tsPath = this.application.options.tspath;
             }
 
             return result;

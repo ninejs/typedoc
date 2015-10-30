@@ -431,6 +431,10 @@ declare module td {
          * Which logger should be used to record messages?
          */
         logger?: LoggerType;
+        /**
+         * Specify an alternative TypeScript compiler?
+         */
+        tspath?: string;
     }
 }
 declare module td {

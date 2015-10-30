@@ -27,7 +27,12 @@ module td
      * Locate TypeScript
      */
     export var tsPath:string = (function() {
-        var path = Path.dirname(require.resolve('typescript'));
+        var path,
+            pathIndex = process.argv.indexOf('-tspath');
+        if (pathIndex >= 0) {
+            path = process.argv[pathIndex + 1];
+        }
+        var path = path || td.Path.dirname(require.resolve('typescript'));
         if (!FS.existsSync(Path.resolve(path, 'tsc.js'))) {
             process.stderr.write('Could not find ´tsc.js´. Please install typescript, e.g. \'npm install typescript\'.\n');
             process.exit();
